@@ -374,27 +374,44 @@
 
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script>
+
         function abrirSobre() {
-        document.getElementById('envelope-overlay').style.transform = "translateY(-100%)";
-        setTimeout(reveal, 500);
-
-        const audio = document.getElementById('musica');
-        const btn = document.getElementById('btn-musica');
-        audio.play();
-        document.getElementById('icono-musica').className = "fas fa-pause";
-    }
-
-    function toggleMusica() {
-        const audio = document.getElementById('musica');
-        const icono = document.getElementById('icono-musica');
-        if (audio.paused) {
+            document.getElementById('envelope-overlay').style.transform = "translateY(-100%)";
+            setTimeout(reveal, 500);
+            const audio = document.getElementById('musica');
             audio.play();
-            icono.className = "fas fa-pause";
-        } else {
-            audio.pause();
-            icono.className = "fas fa-music";
+            document.getElementById('icono-musica').className = "fas fa-pause";
         }
-    }
+
+        function toggleMusica() {
+            const audio = document.getElementById('musica');
+            const icono = document.getElementById('icono-musica');
+            if (audio.paused) {
+                audio.play();
+                icono.className = "fas fa-pause";
+            } else {
+                audio.pause();
+                icono.className = "fas fa-music";
+            }
+        }
+        function openModal() {
+            document.getElementById("bankModal").style.display = "block";
+        }
+        
+        function closeModal() {
+            document.getElementById("bankModal").style.display = "none";
+        }
+        
+        function copyClabe() {
+            const clabe = document.getElementById("clabe-number").innerText;
+            navigator.clipboard.writeText(clabe).then(() => {
+                const btn = document.querySelector(".btn-copy");
+                btn.innerHTML = '<i class="fas fa-check"></i> ¡Copiado!';
+                setTimeout(() => {
+                    btn.innerHTML = '<i class="far fa-copy"></i> Copiar CLABE';
+                }, 2000);
+            });
+        }
 
         const swiper = new Swiper(".mySwiper", {
             effect: "cards",
@@ -431,119 +448,68 @@
         }
         window.addEventListener("scroll", reveal);
 
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbyBQRXJ2J4e_tAwxLRpLv3Umn7CXxvIN_XzLdZEs-gyq_98rQXKXejxYFhU5Wy-VkJ0lw/exec';
-        const form = document.getElementById('rsvpForm');
-        form.addEventListener('submit', e => {
-            e.preventDefault();
-            const btn = document.getElementById('btnEnviar');
-            btn.innerText = "Registrando...";
-            btn.disabled = true;
-            
-            fetch(scriptURL, { method: 'POST', body: new FormData(form), mode: 'no-cors' })
-                .then(() => {
-                    document.getElementById('success-msg').style.display = 'block';
-                    form.reset();
-                    btn.innerText = "Confirmar ahora";
-                    btn.disabled = false;
-                })
-                .catch(() => {
-                    alert("Hubo un error al enviar. Por favor intenta de nuevo.");
-                    btn.disabled = false;
-                    btn.innerText = "Confirmar ahora";
-                });
-        });
-
-        function openModal() {
-            document.getElementById("bankModal").style.display = "block";
-        }
-        
-        function closeModal() {
-            document.getElementById("bankModal").style.display = "none";
-        }
-        
-        function copyClabe() {
-            const clabe = document.getElementById("clabe-number").innerText;
-            navigator.clipboard.writeText(clabe).then(() => {
-                const btn = document.querySelector(".btn-copy");
-                btn.innerHTML = '<i class="fas fa-check"></i> ¡Copiado!';
-                setTimeout(() => {
-                    btn.innerHTML = '<i class="far fa-copy"></i> Copiar CLABE';
-                }, 2000);
-            });
-        }
-        
-        window.addEventListener("click", function(event) {
-            let modal = document.getElementById("bankModal");
-            if (event.target == modal) {
-                closeModal();
-            }
-        });
-
         function configurarInvitacion() {
         const urlParams = new URLSearchParams(window.location.search);
-        const numPases = urlParams.get('p') || "1"; // Si no hay parámetro, por defecto es 1
+        const numPases = parseInt(urlParams.get('p')) || 1;
         
         const txtMensaje = document.getElementById('pases-mensaje');
-        const inputOculto = document.getElementById('input-pases');
-        const selectPases = document.getElementById('select-confirmar-pases');
-
-        inputOculto.value = numPases;
-
-        if (parseInt(numPases) > 1) {
-            txtMensaje.innerText = `Hemos reservado ${numPases} pases para tu familia/pareja`;
-            selectPases.style.display = "block";
-            
-            selectPases.innerHTML = `<option value="" disabled selected>¿Cuántos confirman?</option>`;
-            for (let i = 1; i <= numPases; i++) {
-                selectPases.innerHTML += `<option value="${i}">${i} Persona${i > 1 ? 's' : ''}</option>`;
-            }
-        } else {
-            txtMensaje.innerText = "Hemos reservado 1 pase para ti";
-            selectPases.style.display = "none";
-        }
-    }
-
-    window.addEventListener('DOMContentLoaded', configurarInvitacion);
-    function configurarInvitacion() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const numPases = parseInt(urlParams.get('p')) || 1;
-    
-    const txtMensaje = document.getElementById('pases-mensaje');
-    const inputPases = document.getElementById('input-pases');
-    const selectCantidad = document.getElementById('select-cantidad-asistentes');
-    
-    // 1. Guardar pases en el input oculto
-    inputPases.value = numPases;
-
-    // 2. Personalizar el mensaje de bienvenida
-    if (numPases > 1) {
-        txtMensaje.innerText = `¡Hola! Hemos reservado ${numPases} lugares para tu familia.`;
-    } else {
-        txtMensaje.innerText = `¡Hola! Hemos reservado 1 lugar especial para ti.`;
-    }
-
-    // 3. Configurar el select de cantidad (solo si tienen más de 1 pase)
-    if (numPases > 1) {
-        selectCantidad.style.display = "block";
-        selectCantidad.required = true;
+        const inputPases = document.getElementById('input-pases');
+        const selectCantidad = document.getElementById('select-cantidad-asistentes');
+        const selectAsistencia = document.getElementById('select-asistencia');
         
-        selectCantidad.innerHTML = `<option value="" disabled selected>¿Cuántos asistirán?</option>`;
-        for (let i = 1; i <= numPases; i++) {
-            let option = document.createElement("option");
-            option.value = i;
-            option.text = i + (i === 1 ? " persona" : " personas");
-            selectCantidad.appendChild(option);
-        }
-    } else {
-        // Si solo tiene 1 pase, no mostramos el selector de cantidad
-        selectCantidad.style.display = "none";
-        selectCantidad.required = false;
-        // Opcional: podrías agregar un campo oculto con valor 1 si tu Sheet lo requiere
-    }
-}
+        inputPases.value = numPases;
 
-// Asegúrate de que esto se ejecute al cargar
-window.addEventListener('DOMContentLoaded', configurarInvitacion);
+        if (numPases > 1) {
+            txtMensaje.innerText = `¡Hola! Hemos reservado ${numPases} lugares para tu familia.`;
+        } else {
+            txtMensaje.innerText = `¡Hola! Hemos reservado 1 lugar especial para ti.`;
+        }
+
+        selectAsistencia.addEventListener('change', function() {
+            if (this.value === 'Si' && numPases > 1) {
+                selectCantidad.style.display = "block";
+                selectCantidad.required = true;
+                selectCantidad.innerHTML = `<option value="" disabled selected>¿Cuántos asistirán?</option>`;
+                for (let i = 1; i <= numPases; i++) {
+                    let option = document.createElement("option");
+                    option.value = i;
+                    option.text = i + (i === 1 ? " persona" : " personas");
+                    selectCantidad.appendChild(option);
+                }
+            } else {
+                selectCantidad.style.display = "none";
+                selectCantidad.required = false;
+            }
+        });
+    }
+
+    // Inicialización
+    window.addEventListener('DOMContentLoaded', configurarInvitacion);
+
+    // Envío de Formulario
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbyBQRXJ2J4e_tAwxLRpLv3Umn7CXxvIN_XzLdZEs-gyq_98rQXKXejxYFhU5Wy-VkJ0lw/exec';
+    const form = document.getElementById('rsvpForm');
+
+    form.addEventListener('submit', e => {
+        e.preventDefault();
+        const btn = document.getElementById('btnEnviar');
+        btn.innerText = "Registrando...";
+        btn.disabled = true;
+        
+        fetch(scriptURL, { method: 'POST', body: new FormData(form), mode: 'no-cors' })
+            .then(() => {
+                document.getElementById('success-msg').style.display = 'block';
+                form.reset();
+                btn.innerText = "Confirmar ahora";
+                btn.disabled = false;
+            })
+            .catch(err => {
+                console.error(err);
+                alert("Hubo un error al enviar. Por favor intenta de nuevo.");
+                btn.disabled = false;
+                btn.innerText = "Confirmar ahora";
+            });
+    });
     </script>
 </body>
 </html>
