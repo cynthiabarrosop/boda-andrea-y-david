@@ -448,39 +448,47 @@
         window.addEventListener("scroll", reveal);
 
         function configurarInvitacion() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const numPases = parseInt(urlParams.get('p')) || 1;
-        
-        const txtMensaje = document.getElementById('pases-mensaje');
-        const inputPases = document.getElementById('input-pases');
-        const selectCantidad = document.getElementById('select-cantidad-asistentes');
-        const selectAsistencia = document.getElementById('select-asistencia');
-        
-        inputPases.value = numPases;
+            const urlParams = new URLSearchParams(window.location.search);
+            const numPases = parseInt(urlParams.get('p')) || 1; // Toma el número de pases de la URL (ej: ?p=3)
+            
+            // Estos deben coincidir con los ID que pusiste en tu HTML:
+            const txtMensaje = document.getElementById('pases-mensaje'); // El párrafo que muestra cuántos pases tiene
+            const inputPases = document.getElementById('input-pases');   // El <input type="hidden">
+            const selectCantidad = document.getElementById('select-cantidad-asistentes'); // El <select> que se oculta/muestra
+            const selectAsistencia = document.getElementById('select-asistencia'); // El <select> de "Sí/No"
+            
+            // Asignamos el valor al campo oculto para que se envíe a Google Sheets
+            inputPases.value = numPases;
 
-        if (numPases > 1) {
-            txtMensaje.innerText = `¡Hola! Hemos reservado ${numPases} lugares para tu familia.`;
-        } else {
-            txtMensaje.innerText = `¡Hola! Hemos reservado 1 lugar especial para ti.`;
-        }
-
-        selectAsistencia.addEventListener('change', function() {
-            if (this.value === 'Si' && numPases > 1) {
-                selectCantidad.style.display = "block";
-                selectCantidad.required = true;
-                selectCantidad.innerHTML = `<option value="" disabled selected>¿Cuántos asistirán?</option>`;
-                for (let i = 1; i <= numPases; i++) {
-                    let option = document.createElement("option");
-                    option.value = i;
-                    option.text = i + (i === 1 ? " persona" : " personas");
-                    selectCantidad.appendChild(option);
-                }
+            // Lógica para el mensaje al usuario
+            if (numPases > 1) {
+                txtMensaje.innerText = `¡Hola! Hemos reservado ${numPases} lugares para tu familia.`;
             } else {
-                selectCantidad.style.display = "none";
-                selectCantidad.required = false;
+                txtMensaje.innerText = `¡Hola! Hemos reservado 1 lugar especial para ti.`;
             }
-        });
-    }
+
+            // Lógica de mostrar/ocultar el select de cantidad
+            selectAsistencia.addEventListener('change', function() {
+                // Si elige "Si", mostramos el select
+                if (this.value === 'Si') {
+                    selectCantidad.style.display = "block";
+                    selectCantidad.required = true;
+                    
+                    // Llenamos el select de cantidad dinámicamente
+                    selectCantidad.innerHTML = `<option value="" disabled selected>¿Cuántos asistirán?</option>`;
+                    for (let i = 1; i <= numPases; i++) {
+                        let option = document.createElement("option");
+                        option.value = i;
+                        option.text = i + (i === 1 ? " persona" : " personas");
+                        selectCantidad.appendChild(option);
+                    }
+                } else {
+                    // Si elige "No", ocultamos el select y lo limpiamos
+                    selectCantidad.style.display = "none";
+                    selectCantidad.required = false;
+                }
+            });
+        }
 
     window.addEventListener('DOMContentLoaded', configurarInvitacion);
     const scriptURL = 'https://script.google.com/macros/s/AKfycbyO_js5jmtsCnUyZNvRJzs8NbGJ6NEAib1VStzUwKyQksiY4CNSbGyxV6sIaPByMXipAw/exec';
