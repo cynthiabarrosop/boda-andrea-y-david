@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuestra Boda - Andrea & David</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;600&family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script async defer src="//assets.pinterest.com/js/pinit.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+    <style>
+        :root {
+            --dorado: #993d3d;
+            --crema: #f9f4ea;
+            --oscuro: #2c2c2c;
+            --vino: #8b1e1e;
+            --blanco: #ffffff;
+        }
+
+        body, html { margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; background-color: var(--crema); color: var(--oscuro); scroll-behavior: smooth; overflow-x: hidden; }
+        .cormorant { font-family: 'Cormorant Garamond', serif; }
+        .container { padding: 80px 20px; text-align: center; max-width: 1000px; margin: 0 auto; }
+        
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 1s ease-out; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        #envelope-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #efebe1; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; z-index: 4000;
+            transition: transform 1.2s cubic-bezier(0.8, 0, 0.2, 1);
+        }
+
+        #portable-cover { width: 100%; height: 100vh; position: relative; overflow: hidden; }
+        .cover-img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.7); }
+        .cover-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: white; width: 90%; }
+        .cover-text h1 { font-size: clamp(40px, 8vw, 65px); margin: 0; font-weight: 300; letter-spacing: 5px; }
+        .timer-container { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; max-width: 500px; margin: 40px auto; }
+        .timer-box { background: white; padding: 20px 10px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .timer-box span { display: block; font-size: 28px; font-weight: bold; color: var(--dorado); }
+        .timer-box label { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; }
+        .mySwiper { width: 300px; height: 420px; margin: 20px auto; overflow: visible !important; }
+        .swiper-slide { background: white; padding: 10px 10px 45px 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border-radius: 2px; }
+        .swiper-slide img { width: 100%; height: 100%; object-fit: cover; border: 1px solid #eee; }
+        .swiper-button-next, .swiper-button-prev { color: var(--dorado); display: none; }
+        #programa { position: relative; }
+        .timeline-container { position: relative; max-width: 800px; margin: 0 auto; padding: 40px 0; }
+        .timeline-line { position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: #e0e0e0; transform: translateX(-50%); z-index: 1; }
+        .timeline-item { width: 50%; margin-bottom: 40px; position: relative; z-index: 2;   }
+        .timeline-item.left { left: 0; text-align: right; padding-right: 45px; box-sizing: border-box; }
+        .timeline-item.right { left: 50%; text-align: left; padding-left: 45px; box-sizing: border-box; }
+        .timeline-icon { position: absolute; top: 0; width: 40px; height: 40px; background: var(--dorado);  color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 10; }
+        .left .timeline-icon { right: -20px; }        
+        .right .timeline-icon { left: -20px; }
+        .maps-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px;  margin-top: 40px;  max-width: 1000px; margin-left: auto;margin-right: auto;}
+        .map-card { background: white; padding: 25px;  border-radius: 15px;  box-shadow: 0 5px 15px rgba(0,0,0,0.05); width: 100%; box-sizing: border-box; }
+        iframe { width: 100%; height: 250px; border: 0; border-radius: 10px; margin: 15px 0; }
+        .gift-buttons-container { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; align-items: center; max-width: 900px; margin: 0 auto; }
+        .modal { display: none; position: fixed; z-index: 9999 !important; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); }
+        .modal-content { background-color: #fdfaf6; margin: 10% auto; padding: 30px; border-radius: 15px; width: 85%; max-width: 400px; text-align: center; position: relative; box-shadow: 0 5px 25px rgba(0,0,0,0.5); }
+        .close-modal { position: absolute; top: 15px; right: 20px; font-size: 35px; font-weight: bold; cursor: pointer; color: #b8926a; line-height: 1; }
+        .btn-copy { background-color: var(--dorado); color: white; border: none; padding: 10px; border-radius: 5px; margin-top: 15px; cursor: pointer; width: 100%; }
+        .close-modal:hover { color: var(--vino); }
+        .bank-details { text-align: left; margin-top: 20px; background: #fff; padding: 15px; border-radius: 8px; border: 1px dashed var(--dorado); }
+        #rsvpForm { max-width: 450px; margin: 0 auto; display: flex; flex-direction: column; gap: 15px; }
+        #rsvpForm input, #rsvpForm select, #rsvpForm textarea { width: 100%; padding: 15px; border: 1px solid #ddd; border-radius: 8px; font-family: 'Montserrat'; font-size: 14px; box-sizing: border-box; }
+        #rsvpForm textarea { height: 100px; resize: none; }
+        .btn-gold { background: var(--dorado); color: white; padding: 18px; border: none; border-radius: 8px; cursor: pointer; text-transform: uppercase; font-weight: bold; letter-spacing: 2px; transition: 0.3s; width: 100%; }
+        footer { background: #1a1a1a; color: rgba(255,255,255,0.5); padding: 40px 20px; text-align: center; }
+        footer p { font-size: 10px; letter-spacing: 2px; margin: 0; text-transform: uppercase; }
+        .polaroid-frame:hover { transform: rotate(0deg) scale(1.05); }
+        .polaroid-frame img { width: 100%; display: block; }
+        .polaroid-section {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: center;
+                gap: 50px;
+                padding: 60px 20px;
+                max-width: 1000px;
+                margin: 40px auto;
+        }
+
+        .polaroid-frame {
+            background: white;
+            padding: 15px 15px 40px 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+            transform: rotate(-5deg);
+            flex: 1; 
+            max-width: 350px;
+        }
+
+        .polaroid-text {
+            flex: 1;
+            font-style: italic;
+            max-width: 400px;
+            text-align: left;
+            color: var(--dorado);
+            font-size: 1.4rem;
+            line-height: 1.2;
+            font-family: 'cormorant';
+            text-align: center;
+            letter-spacing: 5px; 
+        }
+        #audio-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 5000;
+        }
+
+        #btn-musica {
+            background: var(--dorado);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s;
+        }
+
+        #btn-musica:hover { transform: scale(1.1); }
+
+        .card-estilo-comun {
+            background: white; 
+            padding: 30px; 
+            border-radius: 20px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05); 
+            max-width: 800px;
+            margin: 0 auto;  
+        }
+
+        @media (min-width: 1024px) {
+            .gift-buttons-container .btn-gold { flex: 1; max-width: 250px; padding: 15px 10px; justify-content: center; }
+            .swiper-button-next, .swiper-button-prev { display: flex; }
+            .mySwiper { width: 400px; height: 520px; }
+        }
+        @media (max-width: 768px) {
+            .polaroid-section { flex-direction: column; text-align: center; }
+            .polaroid-text { text-align: center; font-size: 1.3rem; }
+            .polaroid-frame { transform: rotate(-2deg); margin-bottom: 20px; }
+            .maps-grid { grid-template-columns: 1fr;}
+            }
+
+    </style>
+</head>
+<body>
+    <div id="audio-container">
+        <audio id="musica" loop>
+            <source src="musica.mp3" type="audio/mpeg">
+        </audio>
+        <button id="btn-musica" onclick="toggleMusica()">
+            <i id="icono-musica" class="fas fa-music"></i>
+        </button>
+    </div>
+    <div id="envelope-overlay">
+        <h2 class="cormorant">¡Bienvenidos!</h2>
+        <div onclick="abrirSobre()" style="cursor:pointer; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+            <svg width="100" height="100" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="45" fill="#8b1e1e" />
+                <text x="50" y="62" text-anchor="middle" fill="white" font-family="serif" font-size="22">A&D</text>
+            </svg>
+        </div>
+        <p class="montserrat" style="font-size: 10px; margin-top: 20px; letter-spacing: 3px;">TOCA EL SELLO</p>
+    </div>
+
+    <div id="main-wrapper">
+        <section id="portable-cover">
+            <img src="img/main.jpeg" class="cover-img">
+            <div class="cover-text">
+                <h1 class="cormorant">Andrea & David</h1>
+                <p class="montserrat" style="font-size: 18px; margin-top: 15px;">Ninguna medida de tiempo será suficiente a tu lado… comencemos por siempre.</p>
+                <p class="montserrat" style="letter-spacing: 5px; font-size: 12px; margin-top: 15px;">31 DE OCTUBRE DEL 2026</p>
+            </div>
+        </section>
+
+        <section id="hero" class="container reveal">
+            <h2 class="cormorant" style="font-size: 32px;">¡Faltan solo!</h2>
+            <div class="timer-container">
+                <div class="timer-box"><span id="months">0</span><label>Meses</label></div>
+                <div class="timer-box"><span id="days">0</span><label>Días</label></div>
+                <div class="timer-box"><span id="hours">0</span><label>Horas</label></div>
+                <div class="timer-box"><span id="minutes">0</span><label>Min</label></div>
+            </div>
+        </section>
+
+        <section id="galeria" class="container reveal">
+            <h2 class="cormorant" style="font-size: 36px;">Nuestra Historia</h2>
+            <p> Solo con el corazón se puede ver bien, lo esencial es invisible para los ojos.</p>
+            <div class="swiper mySwiper">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide"><img src="img/2.jpeg"></div>
+                    <div class="swiper-slide"><img src="img/3.jpeg"></div>
+                    <div class="swiper-slide"><img src="img/4.jpeg"></div>
+                    <div class="swiper-slide"><img src="img/5.jpeg"></div>
+                    <div class="swiper-slide"><img src="img/7.jpg"></div>
+                    <div class="swiper-slide"><img src="img/6.jpeg"></div>
+                    <div class="swiper-slide"><img src="img/8.jpeg"></div>
+                    <div class="swiper-slide"><img src="img/2.jpeg"></div>
+                    <div class="swiper-slide"><img src="img/3.jpeg"></div>
+                    <div class="swiper-slide"><img src="img/4.jpeg"></div>
+                    <div class="swiper-slide"><img src="img/5.jpeg"></div>
+                    <div class="swiper-slide"><img src="img/7.jpg"></div>
+                    <div class="swiper-slide"><img src="img/6.jpeg"></div>
+                    <div class="swiper-slide"><img src="img/8.jpeg"></div>
+                    <div class="swiper-slide"><img src="img/2.jpeg"></div>
+                    <div class="swiper-slide"><img src="img/3.jpeg"></div>
+                    <div class="swiper-slide"><img src="img/4.jpeg"></div>
+                    <div class="swiper-slide"><img src="img/5.jpeg"></div>
+                    <div class="swiper-slide"><img src="img/7.jpg"></div>
+                    <div class="swiper-slide"><img src="img/6.jpeg"></div>
+                    <div class="swiper-slide"><img src="img/8.jpeg"></div>
+                    <div class="swiper-slide"><img src="img/2.jpeg"></div>
+                    <div class="swiper-slide"><img src="img/3.jpeg"></div>
+                    <div class="swiper-slide"><img src="img/4.jpeg"></div>
+                    <div class="swiper-slide"><img src="img/5.jpeg"></div>
+                    <div class="swiper-slide"><img src="img/7.jpg"></div>
+                    <div class="swiper-slide"><img src="img/6.jpeg"></div>
+                    <div class="swiper-slide"><img src="img/8.jpeg"></div>
+                </div>
+                <div class="swiper-button-next"></div>
+                <div class="swiper-button-prev"></div>
+            </div>
+        </section>
+
+        <section id="programa" class="container reveal">
+            <h2 class="cormorant" style="font-size: 36px;">Itinerario</h2>
+            <div class="timeline-container">
+                <div class="timeline-line"></div>
+                
+                <div class="timeline-item left reveal">
+                    <div class="timeline-icon"><i class="fas fa-church"></i></div>
+                    <h3 class="cormorant">Ceremonia</h3>
+                    <p class="montserrat" style="font-size: 13px; color: var(--dorado);">4:00 PM</p>
+                </div>
+                <div class="timeline-item right reveal">
+                    <div class="timeline-icon"><i class="fas fa-cocktail"></i></div>
+                    <h3 class="cormorant">Recepción</h3>
+                    <p class="montserrat" style="font-size: 13px; color: var(--dorado);">6:00 PM</p>
+                </div>
+                <div class="timeline-item left reveal">
+                    <div class="timeline-icon"><i class="fas fa-pen-nib"></i></div>
+                    <h3 class="cormorant">Entrada de novios</h3>
+                    <p class="montserrat" style="font-size: 13px; color: var(--dorado);">7:00 PM</p>
+                </div>
+                <div class="timeline-item right reveal">
+                    <div class="timeline-icon"><i class="fas fa-utensils"></i></div>
+                    <h3 class="cormorant">Se abre la pista</h3>
+                    <p class="montserrat" style="font-size: 13px; color: var(--dorado);">9:00 PM</p>
+                </div>
+                <div class="timeline-item left reveal">
+                    <div class="timeline-icon"><i class="fas fa-compact-disc"></i></div>
+                    <h3 class="cormorant">Fiesta</h3>
+                    <p class="montserrat" style="font-size: 13px; color: var(--dorado);">HASTA LAS 2:00 AM</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="ubicacion" class="container reveal">
+            <h2 class="cormorant" style="font-size: 36px;">Ubicación</h2>
+            <div class="maps-grid">
+                <div class="map-card">
+                    <h3 class="montserrat">La Ceremonia</h3>
+                    <p class="cormorant" style="font-size: 22px;">Templo Inmaculado Corazón del María</p>
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3721.7129479326477!2d-101.68329279999999!3d21.1240074!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x842bbf0cb81f565b%3A0xa965ead52c28136e!2sTemplo%20del%20Inmaculado%20Coraz%C3%B3n%20de%20Mar%C3%ADa!5e0!3m2!1ses!2smx!4v1783560162219!5m2!1ses!2smx"></iframe>
+                </div>
+                <div class="map-card">
+                    <h3 class="montserrat">La Fiesta</h3>
+                    <p class="cormorant" style="font-size: 22px;">Casa Balché</p>
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3724.00720026261!2d-101.5482335!3d21.0323979!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x842b970852e96b35%3A0x12fc1d25d526109d!2sCasa%20Balche!5e0!3m2!1ses!2smx!4v1783560368031!5m2!1ses!2smx"></iframe>
+                </div>
+            </div>
+        </section>
+
+        <section id="mesa-regalos" class="container reveal">
+            <h2 class="cormorant" style="font-size: 36px;">Mesa de Regalos</h2>
+            <p style="margin-bottom: 30px;">Tu presencia es nuestro mejor regalo, pero si deseas tener un detalle:</p>
+            <div class="gift-buttons-container">
+                <a href="https://www.amazon.com.mx/wedding/guest-view/346780IGMM1Y2" target="_blank" class="btn-gold" style="text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
+                    <i class="fab fa-amazon"></i> AMAZON
+                </a>
+                <button onclick="openModal()" class="btn-gold" style="cursor: pointer; display: inline-flex; align-items: center; gap: 8px; border: none; font-family: inherit; font-size: inherit;">
+                    <i class="fas fa-money-bill-wave"></i> REGALO EN EFECTIVO
+                </button>
+            </div>
+            <div id="bankModal" class="modal">
+                <div class="modal-content">
+                    <span class="close-modal" onclick="closeModal()">&times;</span>
+                    <h3 class="cormorant" style="font-size: 28px; color: #b8926a; margin-top: 15px;">Datos Bancarios</h3>
+                    <div class="bank-details montserrat" style="font-size: 14px; text-align: left; margin-top: 20px;">
+                        <p><strong>Banco:</strong> Banco Azteca</p>
+                        <p><strong>Titular:</strong> David Aarón Tovar Dominguez</p>
+                        <p><strong>CLABE:</strong> <span id="clabe-number">127225013925405008</span></p>
+                        <button class="btn-copy" onclick="copyClabe()">
+                            <i class="far fa-copy"></i> Copiar CLABE
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="vestimenta" class="container reveal">
+            <div class="card-estilo-comun">
+                 <h2 class="cormorant" style="font-size: 36px;">Dresscode</h2>
+                <p style="line-height: 1.6; margin-bottom: 25px;">
+                    <b style="color: var(--dorado);">Hombres:</b> Traje formal.<br>
+                    <b style="color: var(--dorado);">Mujeres:</b> Formal, favor de evitar los colores claros, y vestidos guinda o vino.
+                </p>
+
+                <div style="max-width: 500px; margin: 0 auto; overflow: hidden; border-radius: 15px; box-shadow: 0 15px 35px rgba(0,0,0,0.15);">
+                    <img src="img/dresscode.jpg" alt="Dress Code Inspiración" style="width: 100%; height: auto; display: block; transition: transform 0.5s ease;">
+                </div>
+            </div>
+        </section>
+
+        <section class="polaroid-section">
+            <div class="polaroid-frame">
+                <img src="img/main.jpeg" alt="Andrea y David">
+            </div>
+            <div class="polaroid-text">
+                <p class="polaroid-quote"> Nuestra historia está hecha de momentos especiales, y tú has formado parte de ella.
+                    <br>
+                    <br> Nos encantaría que nos acompañes a celebrar este nuevo capítulo que estamos por comenzar.
+                </p>
+            </div>
+        </section>
+
+        <section id="rsvp" class="container reveal" style="background: #f9f7f2;">
+            <h2 class="cormorant" style="font-size: 36px;">Confirmar Asistencia</h2>
+            
+            <p id="pases-mensaje" style="font-weight: bold; color: var(--vino); font-size: 18px; margin-bottom: 10px;">
+                Cargando información de tu invitación...
+            </p>
+
+            <p style="margin-bottom: 30px;">¡Esperamos compartir este día tan especial con ustedes! Favor de confirmar su asistencia antes del <strong>31 de Julio.</strong></p>
+
+            <form id="rsvpForm">
+                <input type="hidden" name="pases_asignados" id="input-pases" value="1">
+                
+                <input type="text" name="nombre" placeholder="Nombre completo" required>
+                
+                <select name="asistencia" id="select-asistencia" required>
+                    <option value="" disabled selected>¿Asistirás?</option>
+                    <option value="Si">Sí, ¡con mucho gusto!</option>
+                    <option value="No">Lo siento, no puedo</option>
+                </select>
+
+                <!-- Este es el campo nuevo que quieres ver -->
+                <select name="cantidad_confirmada" id="select-cantidad-asistentes" style="display:none; margin-top: 10px; width: 100%; padding: 15px; border: 1px solid #ddd; border-radius: 8px;">
+                    <option value="" disabled selected>¿Cuántos asistirán?</option>
+                </select>
+
+                <textarea name="mensaje" placeholder="¿Alguna alergia o mensaje para nosotros?"></textarea>
+                <button type="submit" id="btnEnviar" class="btn-gold">Confirmar ahora</button>
+            </form>
+            <p id="success-msg" style="display:none; color: #4a7c44; font-weight: bold; margin-top: 20px;">
+                <i class="fas fa-check-circle"></i> ¡Confirmación enviada con éxito!
+            </p>
+        </section>
+
+        <footer>
+            <p>© Todos los derechos reservados 2026</p>
+            <p style="margin-top: 10px; font-size: 8px; opacity: 0.5;">C & V</p>
+        </footer>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script>
+        function abrirSobre() {
+        document.getElementById('envelope-overlay').style.transform = "translateY(-100%)";
+        setTimeout(reveal, 500);
+
+        const audio = document.getElementById('musica');
+        const btn = document.getElementById('btn-musica');
+        audio.play();
+        document.getElementById('icono-musica').className = "fas fa-pause";
+    }
+
+    function toggleMusica() {
+        const audio = document.getElementById('musica');
+        const icono = document.getElementById('icono-musica');
+        if (audio.paused) {
+            audio.play();
+            icono.className = "fas fa-pause";
+        } else {
+            audio.pause();
+            icono.className = "fas fa-music";
+        }
+    }
+
+        const swiper = new Swiper(".mySwiper", {
+            effect: "cards",
+            grabCursor: true,
+            navigation: { nextEl: ".swiper-button-next", prevEl: ".swiper-button-prev" },
+            mousewheel: { invert: false },
+        });
+
+        const targetDate = new Date("December 26, 2026 15:00:00").getTime();
+        function updateTimer() {
+            const now = new Date().getTime();
+            const diff = targetDate - now;
+            if (diff <= 0) return;
+
+            const msPorMinuto = 1000 * 60;
+            const msPorHora = msPorMinuto * 60;
+            const msPorDia = msPorHora * 24;
+            const msPorMes = msPorDia * 30.44; 
+
+            document.getElementById('months').innerText = Math.floor(diff / msPorMes);
+            document.getElementById('days').innerText = Math.floor((diff % msPorMes) / msPorDia);
+            document.getElementById('hours').innerText = Math.floor((diff % msPorDia) / msPorHora);
+            document.getElementById('minutes').innerText = Math.floor((diff % msPorHora) / msPorMinuto);
+        }
+        setInterval(updateTimer, 1000);
+        updateTimer();
+
+        function reveal() {
+            const reveals = document.querySelectorAll(".reveal");
+            reveals.forEach(el => {
+                const rect = el.getBoundingClientRect();
+                if (rect.top < window.innerHeight - 50) el.classList.add("active");
+            });
+        }
+        window.addEventListener("scroll", reveal);
+
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbyBQRXJ2J4e_tAwxLRpLv3Umn7CXxvIN_XzLdZEs-gyq_98rQXKXejxYFhU5Wy-VkJ0lw/exec';
+        const form = document.getElementById('rsvpForm');
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+            const btn = document.getElementById('btnEnviar');
+            btn.innerText = "Registrando...";
+            btn.disabled = true;
+            
+            fetch(scriptURL, { method: 'POST', body: new FormData(form), mode: 'no-cors' })
+                .then(() => {
+                    document.getElementById('success-msg').style.display = 'block';
+                    form.reset();
+                    btn.innerText = "Confirmar ahora";
+                    btn.disabled = false;
+                })
+                .catch(() => {
+                    alert("Hubo un error al enviar. Por favor intenta de nuevo.");
+                    btn.disabled = false;
+                    btn.innerText = "Confirmar ahora";
+                });
+        });
+
+        function openModal() {
+            document.getElementById("bankModal").style.display = "block";
+        }
+        
+        function closeModal() {
+            document.getElementById("bankModal").style.display = "none";
+        }
+        
+        function copyClabe() {
+            const clabe = document.getElementById("clabe-number").innerText;
+            navigator.clipboard.writeText(clabe).then(() => {
+                const btn = document.querySelector(".btn-copy");
+                btn.innerHTML = '<i class="fas fa-check"></i> ¡Copiado!';
+                setTimeout(() => {
+                    btn.innerHTML = '<i class="far fa-copy"></i> Copiar CLABE';
+                }, 2000);
+            });
+        }
+        
+        window.addEventListener("click", function(event) {
+            let modal = document.getElementById("bankModal");
+            if (event.target == modal) {
+                closeModal();
+            }
+        });
+
+        function configurarInvitacion() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const numPases = urlParams.get('p') || "1"; // Si no hay parámetro, por defecto es 1
+        
+        const txtMensaje = document.getElementById('pases-mensaje');
+        const inputOculto = document.getElementById('input-pases');
+        const selectPases = document.getElementById('select-confirmar-pases');
+
+        inputOculto.value = numPases;
+
+        if (parseInt(numPases) > 1) {
+            txtMensaje.innerText = `Hemos reservado ${numPases} pases para tu familia/pareja`;
+            selectPases.style.display = "block";
+            
+            selectPases.innerHTML = `<option value="" disabled selected>¿Cuántos confirman?</option>`;
+            for (let i = 1; i <= numPases; i++) {
+                selectPases.innerHTML += `<option value="${i}">${i} Persona${i > 1 ? 's' : ''}</option>`;
+            }
+        } else {
+            txtMensaje.innerText = "Hemos reservado 1 pase para ti";
+            selectPases.style.display = "none";
+        }
+    }
+
+    window.addEventListener('DOMContentLoaded', configurarInvitacion);
+    function configurarInvitacion() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const numPases = parseInt(urlParams.get('p')) || 1;
+    
+    const txtMensaje = document.getElementById('pases-mensaje');
+    const inputPases = document.getElementById('input-pases');
+    const selectCantidad = document.getElementById('select-cantidad-asistentes');
+    
+    // 1. Guardar pases en el input oculto
+    inputPases.value = numPases;
+
+    // 2. Personalizar el mensaje de bienvenida
+    if (numPases > 1) {
+        txtMensaje.innerText = `¡Hola! Hemos reservado ${numPases} lugares para tu familia.`;
+    } else {
+        txtMensaje.innerText = `¡Hola! Hemos reservado 1 lugar especial para ti.`;
+    }
+
+    // 3. Configurar el select de cantidad (solo si tienen más de 1 pase)
+    if (numPases > 1) {
+        selectCantidad.style.display = "block";
+        selectCantidad.required = true;
+        
+        selectCantidad.innerHTML = `<option value="" disabled selected>¿Cuántos asistirán?</option>`;
+        for (let i = 1; i <= numPases; i++) {
+            let option = document.createElement("option");
+            option.value = i;
+            option.text = i + (i === 1 ? " persona" : " personas");
+            selectCantidad.appendChild(option);
+        }
+    } else {
+        // Si solo tiene 1 pase, no mostramos el selector de cantidad
+        selectCantidad.style.display = "none";
+        selectCantidad.required = false;
+        // Opcional: podrías agregar un campo oculto con valor 1 si tu Sheet lo requiere
+    }
+}
+
+// Asegúrate de que esto se ejecute al cargar
+window.addEventListener('DOMContentLoaded', configurarInvitacion);
+    </script>
+</body>
+</html>
