@@ -21,22 +21,54 @@
         body, html { margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; background-color: var(--crema); color: var(--oscuro); scroll-behavior: smooth; overflow-x: hidden; }
         .cormorant { font-family: 'Cormorant Garamond', serif; }
         .container { padding: 80px 20px; text-align: center; max-width: 1000px; margin: 0 auto; }
+        
         .reveal { opacity: 0; transform: translateY(30px); transition: all 1s ease-out; }
         .reveal.active { opacity: 1; transform: translateY(0); }
+
         #envelope-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #efebe1; display: flex; flex-direction: column;
             align-items: center; justify-content: center; z-index: 4000;
             transition: transform 1.2s cubic-bezier(0.8, 0, 0.2, 1);
         }
-        #portable-cover { width: 100%; height: 100vh; position: relative; overflow: hidden; }
-        .cover-img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.7); }
-        .cover-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: white; width: 90%; }
-        .cover-text h1 { font-size: clamp(40px, 8vw, 65px); margin: 0; font-weight: 300; letter-spacing: 5px; }
-        .timer-container { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; max-width: 500px; margin: 40px auto; }
-        .timer-box { background: white; padding: 20px 10px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        .timer-box span { display: block; font-size: 28px; font-weight: bold; color: var(--dorado); }
-        .timer-box label { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; }
+
+        #portable-cover { 
+            width: 100%; 
+            height: 100vh; 
+            position: relative; /* Esto es vital para que el hijo absoluto se ubique aquí */
+            overflow: hidden; 
+        }
+
+        .cover-img { 
+            width: 100%; 
+            object-fit: cover; 
+        }
+
+        .cover-timer-overlay {
+            position: absolute; /* Esto saca al timer del flujo normal y lo pega a la imagen */
+            bottom: 50px; 
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            width: 100%;
+            max-width: 500px;
+            z-index: 10;
+        }
+
+        /* Asegura que el timer use flex o grid correctamente */
+        .timer-container { 
+            display: grid; 
+            grid-template-columns: repeat(4, 1fr); 
+            gap: 10px; 
+            width: 90%; 
+            margin: 0 auto;
+        }
+        
+        /* NUEVO ESTILO: Centrar timer dentro de hero */
+        .hero-timer-wrapper { max-width: 500px; margin: 0 auto;}
+        .timer-box-simple { background: transparent; padding: 10px; }
+        .timer-box-simple span { display: block; font-size: 50px; font-weight: bold; color: var(--dorado); }
+        .timer-box-simple label { font-size: 25px; text-transform: uppercase; letter-spacing: 2px; color: var(--oscuro); font-weight: normal;}
         .mySwiper { width: 300px; height: 420px; margin: 20px auto; overflow: visible !important; }
         .swiper-slide { background: white; padding: 10px 10px 45px 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border-radius: 2px; }
         .swiper-slide img { width: 100%; height: 100%; object-fit: cover; border: 1px solid #eee; }
@@ -78,6 +110,7 @@
                 max-width: 1000px;
                 margin: 40px auto;
         }
+
         .polaroid-frame {
             background: white;
             padding: 15px 15px 40px 15px;
@@ -86,6 +119,7 @@
             flex: 1; 
             max-width: 350px;
         }
+
         .polaroid-text {
             flex: 1;
             font-style: italic;
@@ -119,7 +153,9 @@
             justify-content: center;
             transition: transform 0.3s;
         }
+
         #btn-musica:hover { transform: scale(1.1); }
+
         .card-estilo-comun {
             background: white; 
             padding: 30px; 
@@ -129,6 +165,47 @@
             margin: 0 auto;  
         }
 
+
+        .galeria-fotos {
+            display: flex;
+            flex-direction: column; /* Una debajo de otra */
+            align-items: center;    /* Centradas horizontalmente */
+            width: 100%;
+        }
+
+        .galeria-fotos img {
+            width: 90%;             /* Todas ocuparán el 90% del ancho de pantalla */
+            max-width: 600px;       /* Evita que se vean gigantes en computadoras */
+            height: auto;           /* Ajusta la altura automáticamente para no deformarse */
+            margin: 15px 0;         /* Margen arriba y abajo de 15px */
+            border-radius: 10px;    /* Opcional: bordes redondeados para un toque elegante */
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Opcional: sombra suave */
+        }
+
+        .seccion-imagen-final {
+            width: 100%;
+            height: calc(100vh); 
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: cover; 
+            display: block;
+        }
+
+        .seccion-invitacion {
+            width: 100%;
+            min-height: 90vh; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .imagen-contenido {
+            width: 100%;
+            max-width: 500px; 
+            height: auto;   
+            display: block;
+        }
+ 
         @media (min-width: 1024px) {
             .gift-buttons-container .btn-gold { flex: 1; max-width: 250px; padding: 15px 10px; justify-content: center; }
             .swiper-button-next, .swiper-button-prev { display: flex; }
@@ -139,7 +216,11 @@
             .polaroid-text { text-align: center; font-size: 1.3rem; }
             .polaroid-frame { transform: rotate(-2deg); margin-bottom: 20px; }
             .maps-grid { grid-template-columns: 1fr;}
-            }
+            
+            /* Ajuste responsive para el nuevo timer simple */
+            .timer-box-simple span { font-size: 55px; }
+            .timer-box-simple label { font-size: 25px; }
+        }
 
     </style>
 </head>
@@ -163,97 +244,26 @@
         <p class="montserrat" style="font-size: 10px; margin-top: 20px; letter-spacing: 3px;">TOCA EL SELLO</p>
     </div>
 
-    <div id="main-wrapper">
-        <section id="portable-cover">
-            <img src="img/7.jpg" class="cover-img">
-            <div class="cover-text">
-                <h1 class="cormorant">Andrea & David</h1>
-                <p class="montserrat" style="font-size: 18px; margin-top: 15px;">Ninguna medida de tiempo será suficiente a tu lado… comencemos por siempre.</p>
-                <p class="montserrat" style="letter-spacing: 5px; font-size: 12px; margin-top: 15px;">31 DE OCTUBRE DEL 2026</p>
-            </div>
-        </section>
-
-        <section id="hero" class="container reveal">
-            <h2 class="cormorant" style="font-size: 32px;">¡Faltan solo!</h2>
+    <section id="portable-cover">
+        <img src="img/main.jpg" class="cover-img">
+        
+        <div class="cover-timer-overlay">
             <div class="timer-container">
-                <div class="timer-box"><span id="months">0</span><label>Meses</label></div>
-                <div class="timer-box"><span id="days">0</span><label>Días</label></div>
-                <div class="timer-box"><span id="hours">0</span><label>Horas</label></div>
-                <div class="timer-box"><span id="minutes">0</span><label>Min</label></div>
+                <div class="timer-box-simple"><span id="months" style="color:white">0</span><label style="color:white">Meses</label></div>
+                <div class="timer-box-simple"><span id="days" style="color:white">0</span><label style="color:white">Días</label></div>
+                <div class="timer-box-simple"><span id="hours" style="color:white">0</span><label style="color:white">Horas</label></div>
+                <div class="timer-box-simple"><span id="minutes" style="color:white">0</span><label style="color:white">Min</label></div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <section id="galeria" class="container reveal">
-            <h2 class="cormorant" style="font-size: 36px;">Nuestra Historia</h2>
-            <p> Solo con el corazón se puede ver bien, lo esencial es invisible para los ojos.</p>
-            <div class="swiper mySwiper">
-                <div class="swiper-wrapper">
-                    <div class="swiper-slide"><img src="img/2.jpeg"></div>
-                    <div class="swiper-slide"><img src="img/3.jpeg"></div>
-                    <div class="swiper-slide"><img src="img/4.jpeg"></div>
-                    <div class="swiper-slide"><img src="img/5.jpeg"></div>
-                    <div class="swiper-slide"><img src="img/7.jpg"></div>
-                    <div class="swiper-slide"><img src="img/6.jpeg"></div>
-                    <div class="swiper-slide"><img src="img/8.jpeg"></div>
-                    <div class="swiper-slide"><img src="img/2.jpeg"></div>
-                    <div class="swiper-slide"><img src="img/3.jpeg"></div>
-                    <div class="swiper-slide"><img src="img/4.jpeg"></div>
-                    <div class="swiper-slide"><img src="img/5.jpeg"></div>
-                    <div class="swiper-slide"><img src="img/7.jpg"></div>
-                    <div class="swiper-slide"><img src="img/6.jpeg"></div>
-                    <div class="swiper-slide"><img src="img/8.jpeg"></div>
-                    <div class="swiper-slide"><img src="img/2.jpeg"></div>
-                    <div class="swiper-slide"><img src="img/3.jpeg"></div>
-                    <div class="swiper-slide"><img src="img/4.jpeg"></div>
-                    <div class="swiper-slide"><img src="img/5.jpeg"></div>
-                    <div class="swiper-slide"><img src="img/7.jpg"></div>
-                    <div class="swiper-slide"><img src="img/6.jpeg"></div>
-                    <div class="swiper-slide"><img src="img/8.jpeg"></div>
-                    <div class="swiper-slide"><img src="img/2.jpeg"></div>
-                    <div class="swiper-slide"><img src="img/3.jpeg"></div>
-                    <div class="swiper-slide"><img src="img/4.jpeg"></div>
-                    <div class="swiper-slide"><img src="img/5.jpeg"></div>
-                    <div class="swiper-slide"><img src="img/7.jpg"></div>
-                    <div class="swiper-slide"><img src="img/6.jpeg"></div>
-                    <div class="swiper-slide"><img src="img/8.jpeg"></div>
-                </div>
-                <div class="swiper-button-next"></div>
-                <div class="swiper-button-prev"></div>
-            </div>
-        </section>
+    <section class="seccion-invitacion">
+        <div class="contenedor-contenido">
+            <img src="img/frase.png" alt="Invitación" class="imagen-contenido">
+         </div>
+    </section>
 
-        <section id="programa" class="container reveal">
-            <h2 class="cormorant" style="font-size: 36px;">Itinerario</h2>
-            <div class="timeline-container">
-                <div class="timeline-line"></div>
-                
-                <div class="timeline-item left reveal">
-                    <div class="timeline-icon"><i class="fas fa-church"></i></div>
-                    <h3 class="cormorant">Ceremonia</h3>
-                    <p class="montserrat" style="font-size: 13px; color: var(--dorado);">4:00 PM</p>
-                </div>
-                <div class="timeline-item right reveal">
-                    <div class="timeline-icon"><i class="fas fa-cocktail"></i></div>
-                    <h3 class="cormorant">Recepción</h3>
-                    <p class="montserrat" style="font-size: 13px; color: var(--dorado);">6:00 PM</p>
-                </div>
-                <div class="timeline-item left reveal">
-                    <div class="timeline-icon"><i class="fas fa-pen-nib"></i></div>
-                    <h3 class="cormorant">Entrada de novios</h3>
-                    <p class="montserrat" style="font-size: 13px; color: var(--dorado);">7:00 PM</p>
-                </div>
-                <div class="timeline-item right reveal">
-                    <div class="timeline-icon"><i class="fas fa-utensils"></i></div>
-                    <h3 class="cormorant">Se abre la pista</h3>
-                    <p class="montserrat" style="font-size: 13px; color: var(--dorado);">9:00 PM</p>
-                </div>
-                <div class="timeline-item left reveal">
-                    <div class="timeline-icon"><i class="fas fa-compact-disc"></i></div>
-                    <h3 class="cormorant">Fiesta</h3>
-                    <p class="montserrat" style="font-size: 13px; color: var(--dorado);">HASTA LAS 2:00 AM</p>
-                </div>
-            </div>
-        </section>
+    <section id="foto" style="background-image: url('img/main.jpeg');"></section>
 
         <section id="ubicacion" class="container reveal">
             <h2 class="cormorant" style="font-size: 36px;">Ubicación</h2>
@@ -270,6 +280,12 @@
                 </div>
             </div>
         </section>
+
+    <section class="seccion-invitacion">
+        <div class="contenedor-contenido">
+            <img src="img/itinerario.png" alt="itinerario" class="imagen-contenido">
+         </div>
+    </section>
 
         <section id="mesa-regalos" class="container reveal">
             <h2 class="cormorant" style="font-size: 36px;">Mesa de Regalos</h2>
@@ -297,6 +313,8 @@
                 </div>
             </div>
         </section>
+            
+        </section>
 
         <section id="vestimenta" class="container reveal">
             <div class="card-estilo-comun">
@@ -312,19 +330,15 @@
             </div>
         </section>
 
-        <section class="polaroid-section">
-            <div class="polaroid-frame">
-                <img src="img/main.jpeg" alt="Andrea y David">
-            </div>
-            <div class="polaroid-text">
-                <p class="polaroid-quote"> Nuestra historia está hecha de momentos especiales, y tú has formado parte de ella.
-                    <br>
-                    <br> Nos encantaría que nos acompañes a celebrar este nuevo capítulo que estamos por comenzar.
-                </p>
-            </div>
-        </section>
+        <div class="galeria-fotos">
+            <img src="img/3.jpeg" alt="Foto 1">
+            <img src="img/4.jpeg" alt="Foto 2">
+            <img src="img/5.jpeg" alt="Foto 3">
+            <img src="img/7.jpg" alt="Foto 4">
+            <img src="img/6.jpeg" alt="Foto 5">
+        </div>
 
-        <section id="rsvp" class="container reveal" style="background: #f9f7f2;">
+        <section id="rsvp" class="container reveal">
             <h2 class="cormorant" style="font-size: 36px;">Confirmar Asistencia</h2>
             
             <p id="pases-mensaje" style="font-weight: bold; color: var(--vino); font-size: 18px; margin-bottom: 10px;">
@@ -343,8 +357,6 @@
                     <option value="Si">Sí, ¡con mucho gusto!</option>
                     <option value="No">Lo siento, no puedo</option>
                 </select>
-
-                <!-- Este es el campo nuevo que quieres ver -->
                 <select name="cantidad_confirmada" id="select-cantidad-asistentes" style="display:none; margin-top: 10px; width: 100%; padding: 15px; border: 1px solid #ddd; border-radius: 8px;">
                     <option value="" disabled selected>¿Cuántos asistirán?</option>
                 </select>
@@ -355,6 +367,10 @@
             <p id="success-msg" style="display:none; color: #4a7c44; font-weight: bold; margin-top: 20px;">
                 <i class="fas fa-check-circle"></i> ¡Confirmación enviada con éxito!
             </p>
+        </section>
+
+        <section class="seccion-imagen-final" id="ultima" style="background-image: url('img/ultima.jpg');">
+            
         </section>
 
         <footer>
@@ -412,7 +428,7 @@
             mousewheel: { invert: false },
         });
 
-        const targetDate = new Date("December 26, 2026 15:00:00").getTime();
+        const targetDate = new Date("October 31, 2026 16:00:00").getTime();
         function updateTimer() {
             const now = new Date().getTime();
             const diff = targetDate - now;
