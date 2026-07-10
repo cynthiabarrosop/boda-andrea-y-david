@@ -34,25 +34,28 @@
 
         #portable-cover { 
             width: 100%; 
-            height: 100vh; 
-            position: relative; /* Esto es vital para que el hijo absoluto se ubique aquí */
+            min-height: 100vh; /* Cambiado a min-height */
+            position: relative; 
+            display: flex; /* Añadido */
+            flex-direction: column; /* Añadido */
             overflow: hidden; 
         }
-
+        
         .cover-img { 
             width: 100%; 
+            height: 100vh; /* Mantenemos 100vh para que ocupe toda la pantalla */
             object-fit: cover; 
+            object-position: center center; /* Fuerza a que el centro de la foto sea el foco */
         }
-
+        
         .cover-timer-overlay {
-            position: absolute; /* Esto saca al timer del flujo normal y lo pega a la imagen */
-            bottom: 50px; 
+            position: absolute; /* Mantenemos absoluto respecto al padre */
+            bottom: 20px;       /* Un poco más arriba para que no toque el borde */
             left: 50%;
             transform: translateX(-50%);
-            text-align: center;
             width: 100%;
-            max-width: 500px;
             z-index: 10;
+            padding-bottom: 20px; /* Espacio extra por seguridad */
         }
 
         /* Asegura que el timer use flex o grid correctamente */
