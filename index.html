@@ -40,14 +40,14 @@
             flex-direction: column; /* Añadido */
             overflow: hidden; 
         }
-        
+
         .cover-img { 
             width: 100%; 
-            height: 100vh; /* Mantenemos 100vh para que ocupe toda la pantalla */
+            height: 100vh; 
             object-fit: cover; 
-            object-position: center center; /* Fuerza a que el centro de la foto sea el foco */
+            object-position: center center;
         }
-        
+
         .cover-timer-overlay {
             position: absolute; /* Mantenemos absoluto respecto al padre */
             bottom: 20px;       /* Un poco más arriba para que no toque el borde */
@@ -314,19 +314,18 @@
                 </div>
             </div>
         </section>
-            
         </section>
 
         <section id="vestimenta" class="container reveal">
             <div class="card-estilo-comun">
                  <h2 class="cormorant" style="font-size: 36px;">Dresscode</h2>
                 <p style="line-height: 1.6; margin-bottom: 25px;">
-                    <b style="color: var(--dorado);">Hombres:</b> Traje formal.<br>
-                    <b style="color: var(--dorado);">Mujeres:</b> Formal, favor de evitar los colores claros, y vestidos guinda o vino.
+                    <i>ETIQUETA - FORMAL DE GALA </i> <br>
+                    ¡Usa tu mejor look! Color blanco y similares se reservan para la novia
                 </p>
 
-                <div style="max-width: 500px; margin: 0 auto; overflow: hidden; border-radius: 15px; box-shadow: 0 15px 35px rgba(0,0,0,0.15);">
-                    <img src="img/dresscode.jpg" alt="Dress Code Inspiración" style="width: 100%; height: auto; display: block; transition: transform 0.5s ease;">
+                <div style="max-width: 500px; margin: 0 auto; display: flex; justify-content: center; align-items: center;">
+                    <img src="img/dresscode.png" alt="Dress Code Inspiración" style="width: 55%; height: auto; display: block; transition: transform 0.5s ease;">
                 </div>
             </div>
         </section>
@@ -459,32 +458,26 @@
 
         function configurarInvitacion() {
             const urlParams = new URLSearchParams(window.location.search);
-            const numPases = parseInt(urlParams.get('p')) || 1; // Toma el número de pases de la URL (ej: ?p=3)
+            const numPases = parseInt(urlParams.get('p')) || 1;
             
-            // Estos deben coincidir con los ID que pusiste en tu HTML:
-            const txtMensaje = document.getElementById('pases-mensaje'); // El párrafo que muestra cuántos pases tiene
-            const inputPases = document.getElementById('input-pases');   // El <input type="hidden">
-            const selectCantidad = document.getElementById('select-cantidad-asistentes'); // El <select> que se oculta/muestra
-            const selectAsistencia = document.getElementById('select-asistencia'); // El <select> de "Sí/No"
+            const txtMensaje = document.getElementById('pases-mensaje'); 
+            const inputPases = document.getElementById('input-pases');  
+            const selectCantidad = document.getElementById('select-cantidad-asistentes');
+            const selectAsistencia = document.getElementById('select-asistencia'); 
             
-            // Asignamos el valor al campo oculto para que se envíe a Google Sheets
             inputPases.value = numPases;
 
-            // Lógica para el mensaje al usuario
             if (numPases > 1) {
                 txtMensaje.innerText = `¡Hola! Hemos reservado ${numPases} lugares para tu familia.`;
             } else {
                 txtMensaje.innerText = `¡Hola! Hemos reservado 1 lugar especial para ti.`;
             }
 
-            // Lógica de mostrar/ocultar el select de cantidad
             selectAsistencia.addEventListener('change', function() {
-                // Si elige "Si", mostramos el select
                 if (this.value === 'Si') {
                     selectCantidad.style.display = "block";
                     selectCantidad.required = true;
                     
-                    // Llenamos el select de cantidad dinámicamente
                     selectCantidad.innerHTML = `<option value="" disabled selected>¿Cuántos asistirán?</option>`;
                     for (let i = 1; i <= numPases; i++) {
                         let option = document.createElement("option");
@@ -493,7 +486,6 @@
                         selectCantidad.appendChild(option);
                     }
                 } else {
-                    // Si elige "No", ocultamos el select y lo limpiamos
                     selectCantidad.style.display = "none";
                     selectCantidad.required = false;
                 }
@@ -505,23 +497,33 @@
     const form = document.getElementById('rsvpForm');
 
     form.addEventListener('submit', e => {
-        e.preventDefault();
-        const btn = document.getElementById('btnEnviar');
-        btn.innerText = "Registrando...";
-        btn.disabled = true;
-        
+    e.preventDefault();
+    
+    const btn = document.getElementById('btnEnviar');
+    
+    btn.innerText = "Registrando...";
+    btn.disabled = true;
+    btn.style.opacity = "0.7";
+    btn.style.cursor = "not-allowed";
+    
         fetch(scriptURL, { method: 'POST', body: new FormData(form), mode: 'no-cors' })
             .then(() => {
                 document.getElementById('success-msg').style.display = 'block';
                 form.reset();
+                
+                document.getElementById('select-cantidad-asistentes').style.display = "none";
+                
                 btn.innerText = "Confirmar ahora";
                 btn.disabled = false;
+                btn.style.opacity = "1";
+                btn.style.cursor = "pointer";
             })
             .catch(err => {
                 console.error(err);
                 alert("Hubo un error al enviar. Por favor intenta de nuevo.");
                 btn.disabled = false;
                 btn.innerText = "Confirmar ahora";
+                btn.style.opacity = "1";
             });
     });
     </script>
